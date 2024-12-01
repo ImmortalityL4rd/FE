@@ -1,1 +1,1 @@
-getgenv().Script = true 
+getgenv().Script = false
