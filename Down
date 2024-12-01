@@ -1,2 +1,1 @@
-getgenv().Script = false
-print("false")
+getgenv().Script = true
