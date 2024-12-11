@@ -1,14 +1,3 @@
---[[
- .____                  ________ ___.    _____                           __                
- |    |    __ _______   \_____  \\_ |___/ ____\_ __  ______ ____ _____ _/  |_  ___________ 
- |    |   |  |  \__  \   /   |   \| __ \   __\  |  \/  ___// ___\\__  \\   __\/  _ \_  __ \
- |    |___|  |  // __ \_/    |    \ \_\ \  | |  |  /\___ \\  \___ / __ \|  | (  <_> )  | \/
- |_______ \____/(____  /\_______  /___  /__| |____//____  >\___  >____  /__|  \____/|__|   
-         \/          \/         \/    \/                \/     \/     \/                   
-          \_Welcome to LuaObfuscator.com   (Alpha 0.10.8) ~  Much Love, Ferib 
-
-]]--
-
 local StrToNumber = tonumber;
 local Byte = string.byte;
 local Char = string.char;
@@ -194,31 +183,36 @@ local function VMCall(ByteString, vmenv, ...)
 					if (Enum <= 2) then
 						if (Enum <= 0) then
 							Stk[Inst[2]] = Inst[3];
-						elseif (Enum == 1) then
+						elseif (Enum > 1) then
 							do
 								return;
 							end
 						else
-							local A = Inst[2];
-							local T = Stk[A];
-							local B = Inst[3];
-							for Idx = 1, B do
-								T[Idx] = Stk[A + Idx];
-							end
-						end
-					elseif (Enum <= 4) then
-						if (Enum > 3) then
-							Stk[Inst[2]][Inst[3]] = Stk[Inst[4]];
-						else
 							Stk[Inst[2]] = {};
 						end
-					elseif (Enum == 5) then
-						local A = Inst[2];
-						local T = Stk[A];
-						local B = Inst[3];
-						for Idx = 1, B do
-							T[Idx] = Stk[A + Idx];
+					elseif (Enum <= 4) then
+						if (Enum == 3) then
+							do
+								return;
+							end
+						else
+							Stk[Inst[2]] = Inst[3];
 						end
+					elseif (Enum == 5) then
+						Stk[Inst[2]] = {};
+					else
+						local A = Inst[2];
+						Stk[A] = Stk[A]();
+					end
+				elseif (Enum <= 10) then
+					if (Enum <= 8) then
+						if (Enum > 7) then
+							Stk[Inst[2]][Inst[3]] = Stk[Inst[4]];
+						else
+							Stk[Inst[2]][Inst[3]] = Stk[Inst[4]];
+						end
+					elseif (Enum > 9) then
+						Stk[Inst[2]] = Env[Inst[3]];
 					else
 						local A = Inst[2];
 						local T = Stk[A];
@@ -226,32 +220,27 @@ local function VMCall(ByteString, vmenv, ...)
 							Insert(T, Stk[Idx]);
 						end
 					end
-				elseif (Enum <= 10) then
-					if (Enum <= 8) then
-						if (Enum > 7) then
-							Stk[Inst[2]] = Env[Inst[3]];
-						else
-							Stk[Inst[2]] = {};
-						end
-					elseif (Enum > 9) then
-						do
-							return;
-						end
+				elseif (Enum <= 12) then
+					if (Enum > 11) then
+						Stk[Inst[2]] = Env[Inst[3]];
 					else
 						local A = Inst[2];
-						Stk[A] = Stk[A]();
+						local T = Stk[A];
+						local B = Inst[3];
+						for Idx = 1, B do
+							T[Idx] = Stk[A + Idx];
+						end
 					end
-				elseif (Enum <= 12) then
-					if (Enum == 11) then
-						Stk[Inst[2]][Inst[3]] = Stk[Inst[4]];
-					else
-						Stk[Inst[2]] = Env[Inst[3]];
-					end
-				elseif (Enum > 13) then
+				elseif (Enum == 13) then
 					local A = Inst[2];
 					Stk[A] = Stk[A]();
 				else
-					Stk[Inst[2]] = Inst[3];
+					local A = Inst[2];
+					local T = Stk[A];
+					local B = Inst[3];
+					for Idx = 1, B do
+						T[Idx] = Stk[A + Idx];
+					end
 				end
 				VIP = VIP + 1;
 			end
@@ -259,4 +248,4 @@ local function VMCall(ByteString, vmenv, ...)
 	end
 	return Wrap(Deserialize(), {}, vmenv)(...);
 end
-return VMCall("LOL!053Q0003073Q0067657467656E7603043Q004B65797303073Q003132313231323303043Q003132313203063Q0032313331323300093Q00120C3Q00014Q000E3Q000100022Q0003000100033Q00122Q000200033Q00122Q000300043Q00122Q000400054Q000500010003000100100B3Q000200012Q000A3Q00017Q00", GetFEnv(), ...);
+return VMCall("LOL!083Q0003073Q0067657467656E7603043Q004B65797303323Q0045386436536E654B68356D3530674A345365487A4E6A72304D76717267474B6D3172566E494F534146376D7168747670364603323Q007649707679312Q7A694C6744684D4C6747586A304363486758787354723052434C72374F5A6B726E704F6C6645737438774B03323Q004E676567746D2Q587346435A5742534561426462616D464248616D333468786547663963473043644471464268363869663803323Q004B3130437A2Q79534D486B777945564643666B52754448384E664674516F33466E497A69414B4447717631586C747071777903323Q00574664752Q6F4962744337794A72454B5368316B6E4E41476237704853447348446C594E6B6F483750316F56312Q7A73637103323Q00485131676476636D7155413873546B4431754B57723731412Q47796C646D5A613439497669674B616F306744584D6B623177000C3Q00120C3Q00014Q000D3Q000100022Q0005000100063Q00122Q000200033Q00122Q000300043Q00122Q000400053Q00122Q000500063Q00122Q000600073Q00122Q000700084Q000E0001000600010010073Q000200012Q00033Q00017Q00", GetFEnv(), ...);
